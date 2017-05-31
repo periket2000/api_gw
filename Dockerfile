@@ -90,6 +90,7 @@ COPY env.sh ${PROJECT_DIR}/env.sh
 COPY scripts/* ${PROJECT_DIR}/
 COPY config/api-gateway.conf /etc/nginx
 COPY config/mesos.conf /etc/nginx/conf.d/
+COPY certs/* /etc/nginx/
 
 RUN adduser -S py-user -u 1000 \
     && addgroup -S py-user -g 1000 \
