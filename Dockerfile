@@ -86,7 +86,6 @@ RUN mkdir -p ${PROJECT_DIR} \
     && mkdir -p /usr/local/var/www/htdocs/app
 
 COPY init.sh ${PROJECT_DIR}/init-container.sh
-COPY env.sh ${PROJECT_DIR}/env.sh
 COPY scripts/* ${PROJECT_DIR}/
 COPY config/api-gateway.conf /etc/nginx
 COPY config/mesos.conf /etc/nginx/conf.d/

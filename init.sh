@@ -6,6 +6,5 @@ else
 fi
 
 ${PROJECT_DIR}/tests.sh
-${PROJECT_DIR}/virtualenv.sh
 ${PROJECT_DIR}/api_gw.sh
-sleep 300
+while true; do sleep 1000; done
