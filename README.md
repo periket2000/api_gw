@@ -11,5 +11,5 @@ docker build .
   
   + result: <image id>
 
-docker run -p 443:443 -p 80:80 <image id>
+docker run -p 443:443 -p 80:80 --env-file=env.sh <image id>
 ```
