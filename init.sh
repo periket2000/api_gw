@@ -6,5 +6,7 @@ else
 fi
 
 ${PROJECT_DIR}/tests.sh
+${PROJECT_DIR}/virtualenv.sh
 ${PROJECT_DIR}/api_gw.sh
+${PROJECT_DIR}/git_clone.sh
 while true; do sleep 1000; done
