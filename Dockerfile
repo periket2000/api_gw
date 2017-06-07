@@ -82,8 +82,11 @@ RUN  echo "        - building regular version of the api-gateway ... " \
 
 
 ENV PROJECT_DIR /usr/local/pyenv
+RUN mkdir -p /etc/periodic/1min
+COPY scripts/refresh.sh /etc/periodic/1min/refresh
 RUN mkdir -p ${PROJECT_DIR} \
-    && mkdir -p /usr/local/var/www/htdocs/app
+    && mkdir -p /usr/local/var/www/htdocs/app \
+    && chmod +x /etc/periodic/1min/refresh
 
 COPY init.sh ${PROJECT_DIR}/init-container.sh
 COPY scripts/* ${PROJECT_DIR}/
