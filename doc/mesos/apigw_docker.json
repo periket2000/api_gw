@@ -1,57 +1,3 @@
-# api_gw
-
-Image for running nginx based openresty as api gateway for mesos based apis.
-
-## Scenario
-
-You have your apps running on mesos, let's say py-gauth and py-docker. This apps
-could have several endpoints and we need to map those endpoint to a single one.
-
-Here is where apigw get into action. through the spin off project located at
-"https://github.com/periket2000/py_apigw_refresher.git" and it's config.json mapping
-file, it maps mesos app endpoints to unique hostname entry point.
-
-This refresher is accesible for updating the mappings file at http://apigw-endpoint:9090/update.
-You can update the mapping file with curl like:
-
-> curl --upload-file my_config.json http://localhost:9090/update
-
-Here you can see a snippet of the file (my_config.json):
-
-```json
-{
-    "application_mapping": {
-        "py-docker": {
-            "appname": "app1.mesos.local",
-            "upstream": "py_docker"
-        },
-        "py-gauth": {
-            "appname": "app2.mesos.local",
-            "upstream": "py_gauth"
-        }
-    }
-}
-```
-
-The sample file above maps py-docker mesos endpoints to app1.mesos.local hostname under nginx py_docker upstream.
-The sample file above maps py-gauth mesos endpoints to app2.mesos.local hostname under nginx py_gauth upstream.
-
-## Building and running the Image
-
-Clone the project, enter where the Dockerfile is and issue:
-
-```sh
-docker build . -t myapigw
-  
-# Edit the env.docker file for setting the MESOS_MASTERS environment variable and run the container:
-# 9090 -> api refresher rest endpoint
-# 443,80 -> nginx lb 
-docker run -p 9090:9090 -p 443:443 -p 80:80 --env-file=env.docker myapigw
-```
-
-## Mesos deployment file
-
-```json
         {
           "id": "apigw",
           "instances": 1,
@@ -106,5 +52,3 @@ docker run -p 9090:9090 -p 443:443 -p 80:80 --env-file=env.docker myapigw
               }
             ]
         }
-
-```

@@ -86,12 +86,14 @@ RUN mkdir -p /etc/periodic/1min
 COPY scripts/refresh.sh /etc/periodic/1min/refresh
 RUN mkdir -p ${PROJECT_DIR} \
     && mkdir -p /usr/local/var/www/htdocs/app \
-    && chmod +x /etc/periodic/1min/refresh
+    && chmod +x /etc/periodic/1min/refresh \
+    && echo OK > /usr/local/var/www/htdocs/app/index.html
 
 COPY init.sh ${PROJECT_DIR}/init-container.sh
 COPY scripts/* ${PROJECT_DIR}/
 COPY config/api-gateway.conf /etc/nginx
 COPY config/mesos.conf /etc/nginx/conf.d/
+COPY config/default.conf /etc/nginx/conf.d/
 COPY certs/* /etc/nginx/
 
 RUN adduser -S py-user -u 1000 \
