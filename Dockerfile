@@ -7,7 +7,7 @@ RUN apk update \
     && apk add gcc tar libtool zlib jemalloc jemalloc-dev perl \ 
     make musl-dev openssl-dev pcre-dev g++ zlib-dev curl python3 \
     perl-test-longstring perl-list-moreutils perl-http-message \
-    geoip-dev sudo
+    geoip-dev sudo dnsmasq
 
 # openresty build
 ENV OPENRESTY_VERSION=1.9.7.3 \
@@ -65,13 +65,7 @@ RUN  echo "        - building regular version of the api-gateway ... " \
 
 # Installing python 
 #
-     && echo " ... installing python and git ..." \
-#    && apk update \
-#    && apk add python \
-#    && apk add py-pip \
-#    && pip install --upgrade pip
-#
-#    && apk add --no-cache python3 \
+    && echo " ... installing python and git ..." \
     && python3 -m ensurepip \
     && rm -r /usr/lib/python*/ensurepip \
     && pip3 install --upgrade pip setuptools \
@@ -79,6 +73,19 @@ RUN  echo "        - building regular version of the api-gateway ... " \
     && apk --update add git build-base \
     && rm -r /root/.cache \
     && ln -s /usr/bin/python3 /usr/bin/python
+
+# Installing lua resty-http
+ENV LUA_RESTY_HTTP_VERSION 0.07 
+RUN echo " ... installing lua-resty-http..." \
+    && apk update \
+    && apk add make \
+    && mkdir -p /tmp/nginx \
+    && curl -k -L https://github.com/pintsized/lua-resty-http/archive/v${LUA_RESTY_HTTP_VERSION}.tar.gz -o /tmp/nginx/lua-resty-http-${LUA_RESTY_HTTP_VERSION}.tar.gz \
+    && tar -xf /tmp/nginx/lua-resty-http-${LUA_RESTY_HTTP_VERSION}.tar.gz -C /tmp/nginx/ \
+    && cd /tmp/nginx/lua-resty-http-${LUA_RESTY_HTTP_VERSION} \
+    && make install \
+    LUA_LIB_DIR=${_prefix}/nginx/lualib \
+    && rm -rf /tmp/nginx
 
 
 ENV PROJECT_DIR /usr/local/pyenv

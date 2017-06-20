@@ -5,6 +5,8 @@ else
     echo "No environment set" > /tmp/git.txt
 fi
 
+# dnsmasq is required in order to nginx user /etc/hosts as resolver
+sudo /usr/sbin/dnsmasq -d &
 ${PROJECT_DIR}/tests.sh
 ${PROJECT_DIR}/virtualenv.sh
 ${PROJECT_DIR}/api_gw.sh
