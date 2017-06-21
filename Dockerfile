@@ -101,6 +101,7 @@ COPY scripts/* ${PROJECT_DIR}/
 COPY config/api-gateway.conf /etc/nginx
 COPY config/mesos.conf /etc/nginx/conf.d/
 COPY config/access.lua /etc/nginx/
+COPY config/JSON.lua /etc/nginx/
 COPY config/default.conf /etc/nginx/conf.d/
 COPY certs/* /etc/nginx/
 
