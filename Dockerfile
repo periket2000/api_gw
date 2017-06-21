@@ -7,7 +7,7 @@ RUN apk update \
     && apk add gcc tar libtool zlib jemalloc jemalloc-dev perl \ 
     make musl-dev openssl-dev pcre-dev g++ zlib-dev curl python3 \
     perl-test-longstring perl-list-moreutils perl-http-message \
-    geoip-dev sudo dnsmasq
+    geoip-dev sudo dnsmasq redis
 
 # openresty build
 ENV OPENRESTY_VERSION=1.9.7.3 \
@@ -84,9 +84,17 @@ RUN echo " ... installing lua-resty-http..." \
     && tar -xf /tmp/nginx/lua-resty-http-${LUA_RESTY_HTTP_VERSION}.tar.gz -C /tmp/nginx/ \
     && cd /tmp/nginx/lua-resty-http-${LUA_RESTY_HTTP_VERSION} \
     && make install \
+    LUA_LIB_DIR=${_prefix}/nginx/lualib
+
+# Installing lua-redis
+ENV LUA_RESTY_REDIS_VERSION 0.03
+RUN echo " ... Installing lua-resty-redis-connector ..." \
+    && curl -k -L https://codeload.github.com/pintsized/lua-resty-redis-connector/tar.gz/v${LUA_RESTY_REDIS_VERSION} -o /tmp/nginx/lua-resty-redis-connector-${LUA_RESTY_REDIS_VERSION}.tar.gz \
+    && tar -xf /tmp/nginx/lua-resty-redis-connector-${LUA_RESTY_REDIS_VERSION}.tar.gz -C /tmp/nginx/ \
+    && cd /tmp/nginx/lua-resty-redis-connector-${LUA_RESTY_REDIS_VERSION} \
+    && make install \
     LUA_LIB_DIR=${_prefix}/nginx/lualib \
     && rm -rf /tmp/nginx
-
 
 ENV PROJECT_DIR /usr/local/pyenv
 RUN mkdir -p /etc/periodic/1min

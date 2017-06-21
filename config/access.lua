@@ -1,3 +1,19 @@
+-- setup redis connection for keeping authenticated users cache
+local redis_connector = require "resty.redis.connector"
+local rc = redis_connector.new()
+
+local redis, err = rc:connect{
+    host = "127.0.0.1",
+    port = 6379,
+}
+
+local use_redis = "true"
+local user_access = ""
+
+if not redis then
+    use_redis = "false"
+end
+
 local cjson = require "cjson"
 local json = cjson.new()
 
@@ -10,6 +26,19 @@ local gserver_auth = "https://app2.mesos.local/login"
 if auth_header == nil then
     ngx.say("No x-auth-token header included \n-> Access Denied \n-> login at ", gserver_auth)
     return
+end
+
+-- use cached
+if use_redis == "true" then
+    user_access = redis:get(auth_header)
+    if user_access == "api_gw_writer" then
+        -- ngx.exit(1250)
+        return
+    end
+    if user_access == "api_gw_reader" and method == "GET" then
+        -- ngx.exit(1251)
+        return
+    end
 end
 
 -- authenticate
@@ -30,14 +59,18 @@ if res.status == ngx.HTTP_OK then
     -- set up json response in a table
     local data = json.decode(res.body)
     if data.roles ~= nil then
-        --file = io.open("/etc/nginx/test.txt", "a")
+        -- file = io.open("/etc/nginx/test.txt", "a")
         for k,v in pairs(data.roles[1]) do
             if k == "nombre_rol" and v == "api_gw_writer" then
-                -- file:write(k, " -> ", v, " : ", method, "\n")
+                redis:set(auth_header, "api_gw_writer")
+                redis:expire(auth_header, 36000)
+                -- file:write(k, " -> ", v, " : ", method, " use redis: ", use_redis, "\n")
                 return
             end
             if k == "nombre_rol" and v == "api_gw_reader" and method == "GET" then
-                -- file:write(k, " -> ", v, " : ", method, "\n")
+                redis:set(auth_header, "api_gw_reader")
+                redis:expire(auth_header, 36000)
+                -- file:write(k, " -> ", v, " : ", method, " use redis: ", use_redis, "\n")
                 return
             end
         end

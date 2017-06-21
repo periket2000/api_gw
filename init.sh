@@ -7,6 +7,7 @@ fi
 
 # dnsmasq is required in order to nginx user /etc/hosts as resolver
 sudo /usr/sbin/dnsmasq -d &
+/usr/bin/redis-server && redis-cli config set save "" &
 ${PROJECT_DIR}/tests.sh
 ${PROJECT_DIR}/virtualenv.sh
 ${PROJECT_DIR}/api_gw.sh
