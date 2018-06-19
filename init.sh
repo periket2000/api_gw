@@ -13,4 +13,6 @@ ${PROJECT_DIR}/virtualenv.sh
 ${PROJECT_DIR}/api_gw.sh
 ${PROJECT_DIR}/run-parts.sh &
 ${PROJECT_DIR}/git_clone.sh
-while true; do sleep 1000; done
+
+# this line avoid the container to die properly when aurora calls runner.kill()
+# while true; do sleep 1000; done
