@@ -9,4 +9,4 @@ cd ${GIT_DIR}
 echo "... installing requirements ..."
 pip install -r requirements.txt
 export PYTHONPATH=${PROJECT_DIR}/${GIT_DIR}
-python ${SRC_DIR}/${APP_FILE}
+python ${SRC_DIR}/${APP_FILE} &
