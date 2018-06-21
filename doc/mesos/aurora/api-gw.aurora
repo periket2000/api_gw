@@ -1,0 +1,54 @@
+health_check_config = HealthCheckConfig(
+    health_checker = HealthCheckerConfig(http = HttpHealthChecker(endpoint='/', expected_response='', expected_response_code=200)),
+    initial_interval_secs = 125,
+    interval_secs = 2,
+    min_consecutive_successes = 15)
+
+docker = Process(
+    name='docker-run-apigw',
+    cmdline="""
+        docker run \
+            --log-driver=syslog \
+            --log-opt syslog-address=tcp://192.168.250.100:5000 \
+	    --add-host="m1.example.com:192.168.250.200" \
+	    --add-host="m2.example.com:192.168.250.201" \
+	    --add-host="m3.example.com:192.168.250.202" \
+	    --add-host="s1.example.com:192.168.250.203" \
+	    --add-host="s2.example.com:192.168.250.204" \
+	    --add-host="s3.example.com:192.168.250.205" \
+            -p {{thermos.ports[health]}}:80 \
+            -p 443:443 \
+            -p 80:80 \
+            -p 9090:9090 \
+            -e MESOS_MASTERS='192.168.250.200,192.168.250.201,192.168.250.202' \
+            -e PROJECT_DIR='/usr/local/pyenv' \
+            -e GIT_REPO='https://github.com/periket2000/py_apigw_refresher.git' \
+            -e SRC_DIR='src' \
+            -e APP_FILE='app.py' \
+            -e APIGW_CONFIG_DIR='/etc/nginx/conf.d' \
+            -e PYTHONPATH='/usr/local/pyenv/py_apigw_refresher' \
+            -e REFRESH_SECONDS='60' \
+	    -e SCHEDULER='aurora' \
+            -e ZOOKEEPER_HOSTS='192.168.250.200:2181,192.168.250.201:2181,192.168.250.202:2181' \
+            -e ZOOKEEPER_SERVICES='/aurora/vagrant/test/docker-nginx' \
+	    -e SCHEDULER='aurora' \
+            periket2000/api_gw:v2.0
+    """
+)
+
+task = Task(
+    processes=[docker],
+    resources=Resources(cpu=0.1, ram=200*MB, disk=1*GB)
+)
+
+jobs = [
+    Service(
+        cluster='Pleyades',
+        role='vagrant',
+        environment='test',
+        name='apigw',
+        announce=Announcer(primary_port='health'),
+        health_check_config = health_check_config,
+        task=task
+    )
+]

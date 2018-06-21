@@ -10,6 +10,7 @@
               "GIT_REPO": "https://github.com/periket2000/py_apigw_refresher.git",
               "SRC_DIR": "src",
               "APP_FILE": "app.py",
+	      "SCHEDULER": "marathon",
               "APIGW_CONFIG_DIR": "/etc/nginx/conf.d",
               "PYTHONPATH": "/usr/local/pyenv/py_apigw_refresher",
               "REFRESH_SECONDS": "60"

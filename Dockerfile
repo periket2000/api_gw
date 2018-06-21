@@ -1,6 +1,7 @@
 # Image for running git projects in python
 #
 FROM alpine:3.4
+LABEL authors="Marco Albero <periket2000@gmail.com>"
 
 # install dependencies
 RUN apk update \
@@ -18,7 +19,7 @@ ENV OPENRESTY_VERSION=1.9.7.3 \
     _sysconfdir=/etc \
     _sbindir=/usr/local/sbin
 
-RUN  echo "        - building regular version of the api-gateway ... " \
+RUN  echo "- building regular version of the api-gateway ... " \
      && mkdir -p /tmp/nginx \
      && readonly NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
      && echo "using up to $NPROC threads" \
@@ -62,17 +63,14 @@ RUN  echo "        - building regular version of the api-gateway ... " \
             -j${NPROC} \
      && make -j${NPROC} \
      && make install \
-
-# Installing python 
-#
-    && echo " ... installing python and git ..." \
-    && python3 -m ensurepip \
-    && rm -r /usr/lib/python*/ensurepip \
-    && pip3 install --upgrade pip setuptools \
-    && pip3 install virtualenv \
-    && apk --update add git build-base \
-    && rm -r /root/.cache \
-    && ln -s /usr/bin/python3 /usr/bin/python
+     && echo " ... installing python and git ..." \
+     && python3 -m ensurepip \
+     && rm -r /usr/lib/python*/ensurepip \
+     && pip3 install --upgrade pip setuptools \
+     && pip3 install virtualenv \
+     && apk --update add git build-base \
+     && rm -r /root/.cache \
+     && ln -s /usr/bin/python3 /usr/bin/python
 
 # Installing lua resty-http
 ENV LUA_RESTY_HTTP_VERSION 0.07 
