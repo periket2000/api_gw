@@ -15,7 +15,7 @@ if [[ "x$SCHEDULER" == "xaurora" ]]; then
     python src/aurora_refresher.py > /tmp/config
 fi
 
-if [[ "x$SCHEDULER" == "marathon" ]]; then
+if [[ "x$SCHEDULER" == "xmarathon" ]]; then
     python src/refresher.py > /tmp/config
 fi
 
