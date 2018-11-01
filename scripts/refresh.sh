@@ -19,7 +19,8 @@ if [[ "x$SCHEDULER" == "xmarathon" ]]; then
     python src/refresher.py > /tmp/config
 fi
 
-if [ -s /tmp/config ]
+lines=$(wc -l /tmp/config | awk -F' ' '{ print $1 }')
+if [ $lines -gt 1 ]
 then
     cat /tmp/config > $APIGW_CONFIG_DIR/mesos.conf
     sudo /usr/local/sbin/nginx -s reload
