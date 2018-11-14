@@ -1,4 +1,5 @@
 #!/bin/sh
+
 if [ "${PROJECT_DIR}X" != "X" ]; then
     echo "${GIT_REPO}" > ${PROJECT_DIR}/git.txt
 else 
@@ -10,9 +11,7 @@ sudo /usr/sbin/dnsmasq -d &
 /usr/bin/redis-server && redis-cli config set save "" &
 ${PROJECT_DIR}/tests.sh
 ${PROJECT_DIR}/virtualenv.sh
-${PROJECT_DIR}/api_gw.sh
-${PROJECT_DIR}/run-parts.sh &
 ${PROJECT_DIR}/git_clone.sh
+${PROJECT_DIR}/run-parts.sh &
 
-# this line avoid the container to die properly when aurora calls runner.kill()
-while true; do sleep 5; done
+exec sudo /usr/local/sbin/nginx -g "daemon off;"

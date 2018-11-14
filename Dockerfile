@@ -1,6 +1,6 @@
 # Image for running git projects in python
 #
-FROM alpine:3.4
+FROM alpine:3.8
 LABEL authors="Marco Albero <periket2000@gmail.com>"
 
 # install dependencies
